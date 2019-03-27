@@ -1,6 +1,6 @@
 using System;
 
-namespace MercadoLp2.Models
+namespace MercadoLp2.Models.ViewModels
 {
     public class ErrorViewModel
     {

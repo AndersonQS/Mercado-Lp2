@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MercadoLp2.Models;
+using MercadoLp2.Models.ViewModels;
 
 namespace MercadoLp2.Controllers
 {
