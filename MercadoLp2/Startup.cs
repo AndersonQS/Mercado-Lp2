@@ -37,9 +37,10 @@ namespace MercadoLp2
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<MercadoLp2Context>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("MercadoLp2Context")));
+                    options.UseMySql(Configuration.GetConnectionString("MercadoLp2Context"), builder =>
+                        builder.MigrationsAssembly("MercadoLp2")));
         }
-
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
