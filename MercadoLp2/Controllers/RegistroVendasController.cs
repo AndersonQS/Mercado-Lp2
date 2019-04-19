@@ -10,22 +10,22 @@ using MercadoLp2.Data;
 
 namespace MercadoLp2.Controllers
 {
-    public class ProdutosController : Controller
+    public class RegistroVendasController : Controller
     {
         private readonly MercadoLp2Context _context;
 
-        public ProdutosController(MercadoLp2Context context)
+        public RegistroVendasController(MercadoLp2Context context)
         {
             _context = context;
         }
 
-        // GET: Produtos
+        // GET: RegistroVendas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Produto.ToListAsync());
+            return View(await _context.RegistroVendas.ToListAsync());
         }
 
-        // GET: Produtos/Details/5
+        // GET: RegistroVendas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,47 @@ namespace MercadoLp2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto
+            var registroVendas = await _context.RegistroVendas
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (produto == null)
+            if (registroVendas == null)
             {
                 return NotFound();
             }
 
-            return View(produto);
+            return View(registroVendas);
         }
 
-        // GET: Produtos/Create
+        // GET: RegistroVendas/Create
         public IActionResult Create()
         {
-            return View();
+            RegistroVendas registroVendas = new RegistroVendas();
+
+            foreach (ProdutosVendidos pv in Carrinho.listaCarrinho)
+            {
+                registroVendas.Vendidos.Add(pv);
+            }
+        
+            return View(registroVendas);
         }
 
-        // POST: Produtos/Create
+        // POST: RegistroVendas/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Preco")] Produto produto)
+        public async Task<IActionResult> Create([Bind("Id,Data,Valor,Status")] RegistroVendas registroVendas)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(produto);
+                
+                _context.Add(registroVendas);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(produto);
+            return View(registroVendas);
         }
 
-        // GET: Produtos/Edit/5
+        // GET: RegistroVendas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +81,22 @@ namespace MercadoLp2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto.FindAsync(id);
-            if (produto == null)
+            var registroVendas = await _context.RegistroVendas.FindAsync(id);
+            if (registroVendas == null)
             {
                 return NotFound();
             }
-            return View(produto);
+            return View(registroVendas);
         }
 
-        // POST: Produtos/Edit/5
+        // POST: RegistroVendas/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Preco")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Data,Valor,Status")] RegistroVendas registroVendas)
         {
-            if (id != produto.Id)
+            if (id != registroVendas.Id)
             {
                 return NotFound();
             }
@@ -97,12 +105,12 @@ namespace MercadoLp2.Controllers
             {
                 try
                 {
-                    _context.Update(produto);
+                    _context.Update(registroVendas);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProdutoExists(produto.Id))
+                    if (!RegistroVendasExists(registroVendas.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +121,16 @@ namespace MercadoLp2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(produto);
+            return View(registroVendas);
         }
 
-        // GET: Produtos/Delete/5
+        public async void MostrarProdutos()
+        {
+            ProdutosVendidosController Pvc = new ProdutosVendidosController(_context);
+            Pvc.Index();
+        }
+
+        // GET: RegistroVendas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,42 +138,30 @@ namespace MercadoLp2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto
+            var registroVendas = await _context.RegistroVendas
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (produto == null)
+            if (registroVendas == null)
             {
                 return NotFound();
             }
 
-            return View(produto);
+            return View(registroVendas);
         }
 
-        // POST: Produtos/Delete/5
+        // POST: RegistroVendas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var produto = await _context.Produto.FindAsync(id);
-            _context.Produto.Remove(produto);
+            var registroVendas = await _context.RegistroVendas.FindAsync(id);
+            _context.RegistroVendas.Remove(registroVendas);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProdutoExists(int id)
+        private bool RegistroVendasExists(int id)
         {
-            return _context.Produto.Any(e => e.Id == id);
-        }
-
-        public async void AddCarrinho(int? id)
-        {
-            var produto = await _context.Produto.FindAsync(id);
-            ProdutosVendidos produtosVendidos = new ProdutosVendidos();
-            produtosVendidos.Preco = produto.Preco;
-            produtosVendidos.Qtde = 1;
-            produtosVendidos.Prod = produto;
-           
-            Carrinho.listaCarrinho.Add(produtosVendidos);
-            
+            return _context.RegistroVendas.Any(e => e.Id == id);
         }
     }
 }

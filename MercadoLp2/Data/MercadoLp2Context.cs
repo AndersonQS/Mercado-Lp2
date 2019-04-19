@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MercadoLp2.Models;
 
 namespace MercadoLp2.Models
 {
@@ -14,5 +15,9 @@ namespace MercadoLp2.Models
         }
 
         public DbSet<MercadoLp2.Models.Produto> Produto { get; set; }
+
+        public DbSet<MercadoLp2.Models.RegistroVendas> RegistroVendas { get; set; }
+
+        public DbSet<MercadoLp2.Models.ProdutosVendidos> ProdutosVendidos { get; set; }
     }
 }

@@ -10,22 +10,23 @@ using MercadoLp2.Data;
 
 namespace MercadoLp2.Controllers
 {
-    public class ProdutosController : Controller
+    public class ProdutosVendidosController : Controller
     {
         private readonly MercadoLp2Context _context;
 
-        public ProdutosController(MercadoLp2Context context)
+        public ProdutosVendidosController(MercadoLp2Context context)
         {
             _context = context;
         }
 
-        // GET: Produtos
+        // GET: ProdutosVendidos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Produto.ToListAsync());
+
+            return View(Carrinho.Venda.Vendidos);
         }
 
-        // GET: Produtos/Details/5
+        // GET: ProdutosVendidos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +34,39 @@ namespace MercadoLp2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto
+            var produtosVendidos = await _context.ProdutosVendidos
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (produto == null)
+            if (produtosVendidos == null)
             {
                 return NotFound();
             }
 
-            return View(produto);
+            return View(produtosVendidos);
         }
 
-        // GET: Produtos/Create
+        // GET: ProdutosVendidos/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Produtos/Create
+        // POST: ProdutosVendidos/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Preco")] Produto produto)
+        public async Task<IActionResult> Create([Bind("Id,Qtde,Preco")] ProdutosVendidos produtosVendidos)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(produto);
+                _context.Add(produtosVendidos);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(produto);
+            return View(produtosVendidos);
         }
 
-        // GET: Produtos/Edit/5
+        // GET: ProdutosVendidos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +74,22 @@ namespace MercadoLp2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto.FindAsync(id);
-            if (produto == null)
+            var produtosVendidos = await _context.ProdutosVendidos.FindAsync(id);
+            if (produtosVendidos == null)
             {
                 return NotFound();
             }
-            return View(produto);
+            return View(produtosVendidos);
         }
 
-        // POST: Produtos/Edit/5
+        // POST: ProdutosVendidos/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Preco")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Qtde,Preco")] ProdutosVendidos produtosVendidos)
         {
-            if (id != produto.Id)
+            if (id != produtosVendidos.Id)
             {
                 return NotFound();
             }
@@ -97,12 +98,12 @@ namespace MercadoLp2.Controllers
             {
                 try
                 {
-                    _context.Update(produto);
+                    _context.Update(produtosVendidos);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProdutoExists(produto.Id))
+                    if (!ProdutosVendidosExists(produtosVendidos.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +114,10 @@ namespace MercadoLp2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(produto);
+            return View(produtosVendidos);
         }
 
-        // GET: Produtos/Delete/5
+        // GET: ProdutosVendidos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,42 +125,30 @@ namespace MercadoLp2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto
+            var produtosVendidos = await _context.ProdutosVendidos
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (produto == null)
+            if (produtosVendidos == null)
             {
                 return NotFound();
             }
 
-            return View(produto);
+            return View(produtosVendidos);
         }
 
-        // POST: Produtos/Delete/5
+        // POST: ProdutosVendidos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var produto = await _context.Produto.FindAsync(id);
-            _context.Produto.Remove(produto);
+            var produtosVendidos = await _context.ProdutosVendidos.FindAsync(id);
+            _context.ProdutosVendidos.Remove(produtosVendidos);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProdutoExists(int id)
+        private bool ProdutosVendidosExists(int id)
         {
-            return _context.Produto.Any(e => e.Id == id);
-        }
-
-        public async void AddCarrinho(int? id)
-        {
-            var produto = await _context.Produto.FindAsync(id);
-            ProdutosVendidos produtosVendidos = new ProdutosVendidos();
-            produtosVendidos.Preco = produto.Preco;
-            produtosVendidos.Qtde = 1;
-            produtosVendidos.Prod = produto;
-           
-            Carrinho.listaCarrinho.Add(produtosVendidos);
-            
+            return _context.ProdutosVendidos.Any(e => e.Id == id);
         }
     }
 }

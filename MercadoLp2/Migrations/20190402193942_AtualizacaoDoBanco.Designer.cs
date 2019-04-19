@@ -3,14 +3,16 @@ using System;
 using MercadoLp2.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MercadoLp2.Migrations
 {
     [DbContext(typeof(MercadoLp2Context))]
-    partial class MercadoLp2ContextModelSnapshot : ModelSnapshot
+    [Migration("20190402193942_AtualizacaoDoBanco")]
+    partial class AtualizacaoDoBanco
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,13 +40,13 @@ namespace MercadoLp2.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Preco");
-
                     b.Property<int?>("ProdId");
 
                     b.Property<int>("Qtde");
 
                     b.Property<int?>("RegistroVendasId");
+
+                    b.Property<double>("preco");
 
                     b.HasKey("Id");
 
@@ -66,31 +68,9 @@ namespace MercadoLp2.Migrations
 
                     b.Property<int>("Valor");
 
-                    b.Property<int?>("VendedorId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("VendedorId");
 
                     b.ToTable("RegistroVendas");
-                });
-
-            modelBuilder.Entity("MercadoLp2.Models.Vendedor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Email");
-
-                    b.Property<string>("Nome");
-
-                    b.Property<int?>("ProdutoId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProdutoId");
-
-                    b.ToTable("Vendedor");
                 });
 
             modelBuilder.Entity("MercadoLp2.Models.ProdutosVendidos", b =>
@@ -102,20 +82,6 @@ namespace MercadoLp2.Migrations
                     b.HasOne("MercadoLp2.Models.RegistroVendas")
                         .WithMany("Vendidos")
                         .HasForeignKey("RegistroVendasId");
-                });
-
-            modelBuilder.Entity("MercadoLp2.Models.RegistroVendas", b =>
-                {
-                    b.HasOne("MercadoLp2.Models.Vendedor")
-                        .WithMany("Vendas")
-                        .HasForeignKey("VendedorId");
-                });
-
-            modelBuilder.Entity("MercadoLp2.Models.Vendedor", b =>
-                {
-                    b.HasOne("MercadoLp2.Models.Produto")
-                        .WithMany("Vendedors")
-                        .HasForeignKey("ProdutoId");
                 });
 #pragma warning restore 612, 618
         }
